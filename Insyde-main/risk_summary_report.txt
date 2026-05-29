@@ -1,0 +1,51 @@
+======================================================================
+  UEBA SYSTEM — RISK SCORING REPORT
+======================================================================
+
+  Total users analysed  : 1,000
+  Medium threshold (P70) : 44.57
+  High threshold   (P90) : 50.28
+
+  RISK DISTRIBUTION
+  ----------------------------------------
+  Risk Tier       Count   % of Total
+  ----------------------------------------
+  High              100        10.0%
+  Medium            200        20.0%
+  Low               700        70.0%
+
+  TOP HIGH-RISK USERS
+  --------------------------------------------------------------------
+  User         Risk Score Tier      Key Indicators
+  --------------------------------------------------------------------
+  EIS0041           71.52 High      [CRITICAL] Any malicious URL access | [CRITIC
+  CCA0046           64.17 High      [CRITICAL] Any malicious URL access | [CRITIC
+  KKW0879           63.45 High      [CRITICAL] Any malicious URL access | [CRITIC
+  BWP0202           61.03 High      [CRITICAL] Any malicious URL access | [CRITIC
+  WDD0366           60.76 High      [CRITICAL] Any malicious URL access | [CRITIC
+  BAL0044           60.65 High      [CRITICAL] Any malicious URL access | [CRITIC
+  GTD0219           60.31 High      [CRITICAL] Any malicious URL access | [CRITIC
+  BSS0369           60.20 High      [CRITICAL] Any malicious URL access | [CRITIC
+  IBS0836           60.18 High      [CRITICAL] Any malicious URL access | [CRITIC
+  IBB0359           60.16 High      [CRITICAL] Any malicious URL access | [CRITIC
+  VCC0396           59.59 High      [CRITICAL] Any malicious URL access | [CRITIC
+  RUM0880           59.15 High      [CRITICAL] Any malicious URL access | [CRITIC
+  MLM0950           58.45 High      [CRITICAL] Any malicious URL access | [CRITIC
+  JHP0583           58.38 High      [CRITICAL] Any malicious URL access | [CRITIC
+  AJF0370           58.14 High      [CRITICAL] Any malicious URL access | [CRITIC
+  PNH0761           57.93 High      [CRITICAL] Any malicious URL access | [CRITIC
+  IIW0249           57.72 High      [CRITICAL] Any malicious URL access | [CRITIC
+  MOS0047           57.53 High      [CRITICAL] Any malicious URL access | [CRITIC
+  RHO0732           57.43 High      [CRITICAL] Any malicious URL access | [CRITIC
+  BTL0226           56.49 High      [CRITICAL] Any malicious URL access | [CRITIC
+
+  SCORING WEIGHT BREAKDOWN
+  --------------------------------------------------------------------
+  Tier         Multiplier  Description
+  --------------------------------------------------------------------
+  CRITICAL           2.50  (6 indicators)
+  HIGH               1.50  (8 indicators)
+  MEDIUM             0.80  (9 indicators)
+  LOW                0.30  (5 indicators)
+
+======================================================================
