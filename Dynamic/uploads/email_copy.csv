@@ -1,0 +1,11 @@
+﻿user,date,to,activity,file_name,device
+EMP001,2025-01-01 23:45:00,test@gmail.com,Logon,salary.xlsx,USB
+EMP001,2025-01-01 23:50:00,john@yahoo.com,Failed Login,customer_data.csv,USB
+EMP001,2025-01-02 10:00:00,bob@company.com,Logon,notes.txt,Laptop
+EMP002,2025-01-03 09:00:00,alice@company.com,Logon,project.docx,Desktop
+EMP002,2025-01-04 23:30:00,mark@gmail.com,Logon,backup.zip,Mobile
+EMP003,2025-01-05 01:15:00,external@protonmail.com,Failed Login,employee_records.xlsx,USB
+EMP003,2025-01-05 01:20:00,ceo@gmail.com,Logon,financial_report.pdf,Unknown_Device
+EMP003,2025-01-05 01:25:00,board@gmail.com,Logon,confidential.zip,USB
+EMP003,2025-01-05 01:30:00,outside@yahoo.com,Logon,payroll.xlsx,Unknown_Device
+EMP003,2025-01-05 01:35:00,audit@gmail.com,Failed Login,employees.pdf,USB

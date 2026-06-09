@@ -1,0 +1,6 @@
+user,date,file_name,activity
+EMP001,2025-01-01 23:30:00,salary.xlsx,Copy
+EMP001,2025-01-01 23:45:00,customer_data.csv,Copy
+EMP001,2025-01-02 10:00:00,notes.txt,Open
+EMP002,2025-01-03 09:00:00,project.docx,Open
+EMP002,2025-01-04 22:30:00,backup.zip,Copy
