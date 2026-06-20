@@ -19,9 +19,7 @@ def generate_pdf_report(
     output_path="Insider_Threat_Report.pdf",
 ):
     pdf = SimpleDocTemplate(output_path)
-
     styles = getSampleStyleSheet()
-
     elements = []
 
     # Title
@@ -32,7 +30,7 @@ def generate_pdf_report(
     elements.append(Paragraph(f"Generated On: {generated_time}", styles["Normal"]))
     elements.append(Spacer(1, 20))
 
-    # Statistics
+    # Statistics calculation
     total_users = len(results)
     high_risk = len(results[results["risk_level"] == "High"]) if total_users > 0 else 0
     medium_risk = len(results[results["risk_level"] == "Medium"]) if total_users > 0 else 0
@@ -61,25 +59,59 @@ def generate_pdf_report(
             f"High Risk Users: {high_risk}<br/>"
             f"Medium Risk Users: {medium_risk}<br/>"
             f"Low Risk Users: {low_risk}<br/><br/>"
-            "Highest Risk User: N/A<br/>"
+            f"Highest Risk User: N/A<br/>"
         )
 
     elements.append(Paragraph(summary, styles["BodyText"]))
     elements.append(Spacer(1, 20))
 
-    # Risk Distribution Chart
-    if os.path.exists(risk_chart_path):
+    # --- Helper Path-Resolution Logic ---
+    # This checks if the chart exists where Streamlit claims it is. 
+    # If not, it drops any redundant "Dynamic/" prefix caused by working-directory shifts.
+    def resolve_chart_path(path):
+        if not path:
+            return None
+        if os.path.exists(path):
+            return path
+        
+        # Alternative attempt: strip 'Dynamic/' if we are already inside it
+        alt_path = path.replace("Dynamic/", "") if "Dynamic/" in path else f"Dynamic/{path}"
+        if os.path.exists(alt_path):
+            return alt_path
+            
+        # Hard fallback: Check standard reporting directory inside current location
+        basename = os.path.basename(path)
+        fallback_path = os.path.join("reporting", basename)
+        if os.path.exists(fallback_path):
+            return fallback_path
+            
+        return None
+
+    resolved_risk_path = resolve_chart_path(risk_chart_path)
+    resolved_top_path = resolve_chart_path(top_users_chart_path)
+
+    # --- Risk Distribution Chart Rendering ---
+    if resolved_risk_path:
         elements.append(Paragraph("Risk Distribution", styles["Heading1"]))
-        elements.append(Image(risk_chart_path, width=450, height=300))
+        elements.append(Image(resolved_risk_path, width=450, height=300))
+        elements.append(Spacer(1, 20))
+    else:
+        # Debug helper added directly to PDF layout text to help you track failures
+        elements.append(Paragraph("Risk Distribution Chart File Not Found", styles["Heading1"]))
+        elements.append(Paragraph(f"<i>Checked paths: '{risk_chart_path}'</i>", styles["Normal"]))
         elements.append(Spacer(1, 20))
 
-    # Top Users Chart
-    if os.path.exists(top_users_chart_path):
+    # --- Top Users Chart Rendering ---
+    if resolved_top_path:
         elements.append(Paragraph("Top Risk Users", styles["Heading1"]))
-        elements.append(Image(top_users_chart_path, width=450, height=300))
+        elements.append(Image(resolved_top_path, width=450, height=300))
+        elements.append(Spacer(1, 20))
+    else:
+        elements.append(Paragraph("Top Risk Users Chart File Not Found", styles["Heading1"]))
+        elements.append(Paragraph(f"<i>Checked paths: '{top_users_chart_path}'</i>", styles["Normal"]))
         elements.append(Spacer(1, 20))
 
-    # High Risk Users
+    # High Risk Users list
     elements.append(Paragraph("High Risk Users", styles["Heading1"]))
     high_risk_df = results[results["risk_level"] == "High"] if total_users > 0 else []
 
@@ -114,6 +146,6 @@ def generate_pdf_report(
     )
     elements.append(Paragraph(recommendations, styles["BodyText"]))
 
+    # Cleaned up code sequence: Build doc first, THEN return output
     pdf.build(elements)
     return output_path
-    elements.append(Spacer(1, 20))
