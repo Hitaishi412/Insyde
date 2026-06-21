@@ -5,14 +5,24 @@ Prediction engine for Insider Threat Detection.
 """
 from prediction.explain import generate_reason
 from config import FEATURE_COLUMNS
-
+import os
 import joblib
 import pandas as pd
 import numpy as np
 
 # Load model artifacts once
-model = joblib.load("models/model.pkl")
-scaler = joblib.load("models/scaler.pkl")
+
+
+# 1. Get the directory path where THIS script (predict.py) lives
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Travel up to find the "models" folder relative to this script
+# Since predict.py sits inside Dynamic/prediction/, travelling up one level gives us Dynamic/
+DYNAMIC_DIR = os.path.dirname(CURRENT_DIR)
+MODEL_PATH = os.path.join(DYNAMIC_DIR, "models", "model.pkl")
+
+# 3. Load the model using the guaranteed absolute path
+model = joblib.load(MODEL_PATH)
 
 
 
