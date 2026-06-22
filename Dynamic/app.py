@@ -57,6 +57,30 @@ if uploaded_file is not None:
         # Feature Engineering
         # --------------------------
         feature_df = process_logs(raw_df)
+        
+        # --- FIX: Map threat signals from raw logs back onto aggregated features ---
+        if "user" in raw_df.columns:
+            # 1. Forward the max risk multiplier calculated per user
+            if "risk_multiplier" in raw_df.columns:
+                max_multipliers = raw_df.groupby("user")["risk_multiplier"].max().reset_index()
+                feature_df = feature_df.merge(max_multipliers, on="user", how="left")
+            
+            # 2. Forward critical activity events to trigger downstream overrides
+            if "activity" in raw_df.columns:
+                critical_actions = ["usb_copy", "file_download", "malicious_url_click"]
+                # Identify users who performed any critical actions
+                raw_df["is_critical"] = raw_df["activity"].isin(critical_actions)
+                crit_users = raw_df[raw_df["is_critical"]].groupby("user")["activity"].first().reset_index()
+                
+                # Fallback to general activity if no critical action was found
+                gen_users = raw_df.groupby("user")["activity"].first().reset_index()
+                
+                feature_df = feature_df.merge(crit_users, on="user", how="left", suffixes=('', '_crit'))
+                
+                # Fill missing activity values from the general list if needed
+                if "activity" in feature_df.columns:
+                    feature_df["activity"] = feature_df["activity"].fillna(feature_df["user"].map(gen_users.set_index("user")["activity"]))
+
         st.write("Feature Columns")
         st.write(feature_df.columns.tolist())
         st.subheader("Generated Behavioral Features")
@@ -238,8 +262,7 @@ if uploaded_file is not None:
             mime="text/csv"
         )
         
-        # --- FIXED PDF EXPORT BLOCK ---
-        # The engine now handles rendering safely nested inside structural execution blocks.
+        # --- PDF EXPORT BLOCK ---
         pdf_path = generate_pdf_report(
             results=results,
             risk_chart_path="risk_distribution.png",
