@@ -30,21 +30,34 @@ scaler = joblib.load(SCALER_PATH)
 def calculate_risk_score(row):
     score = 0
 
-    # Email
-    score += row["external_ratio"] * 20
-    score += row["late_night_ratio"] * 15
+    # --- 1. SENSOR RATIO CALCULATIONS (Using safe .get fallback) ---
+    score += row.get("external_ratio", 0) * 20
+    score += row.get("late_night_ratio", 0) * 15
 
     # Logon
-    score += row["after_hours_ratio"] * 15
-    score += row["weekend_login_ratio"] * 10
+    score += row.get("after_hours_ratio", 0) * 15
+    score += row.get("weekend_login_ratio", 0) * 10
 
     # File
-    score += row["copy_ratio"] * 15
-    score += row["sensitive_ratio"] * 10
+    score += row.get("copy_ratio", 0) * 15
+    score += row.get("sensitive_ratio", 0) * 10
 
     # Device
-    score += row["usb_ratio"] * 10
-    score += row["unknown_device_ratio"] * 5
+    score += row.get("usb_ratio", 0) * 10
+    score += row.get("unknown_device_ratio", 0) * 5
+
+    # --- 2. RAW ACTIVITY FALLBACKS ---
+    # If the row has raw activity labels instead of engineered ratios, catch them directly
+    if "activity" in row and pd.notna(row["activity"]):
+        act = str(row["activity"]).lower()
+        if act in ["usb_copy", "file_download", "malicious_url_click"]:
+            score += 50  # Give it a heavy bump
+        elif act in ["email", "file_write"]:
+            score += 20
+
+    # --- 3. EXPLICIT RISK MULTIPLIER BOOST ---
+    if "risk_multiplier" in row and pd.notna(row["risk_multiplier"]):
+        score += float(row["risk_multiplier"]) * 15
 
     return min(score, 100)
 
